@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  db:
+    container_name: db-rdi_proyect
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db-data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: rdi_project_db
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel1234
+    networks:
+      - net-sansaquinta
+  web:
+    container_name: rdi_project-web
+    depends_on:
+      - db
+    ports:
+      - "7070:80"
+    volumes:
+      - "./web:/var/www/html"
+      - "./httpd.conf:/etc/httpd/conf/httpd.conf"
+    image: laravel-php8
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - net-rdi_project
+networks:
+  net-sansaquinta:
